@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+<h1>Portfolio Charts</h1>
+<h2>{{ portfolio['name'] }}</h2>
+<p>Total value: ${{ '%.2f'|format(summary['total_value']) }}</p>
+<p>Profit / loss: ${{ '%.2f'|format(summary['total_gain_loss']) }}
+   ({{ '%.2f'|format(summary['total_gain_loss_percent']) }}%)</p>
+<h3>Allocation by Holding</h3>
+<!-- Native HTML bars show the same allocation shown numerically on Info. -->
+{% if summary['holdings'] %}
+    {% for h in summary['holdings'] %}
+    <p>
+        <label for="holding-{{ loop.index }}">{{ h['ticker'] }} — {{ '%.1f'|format(h['allocation_percent']) }}%</label>
+        <progress id="holding-{{ loop.index }}" value="{{ h['allocation_percent'] }}" max="100"></progress>
+    </p>
+    {% endfor %}
+{% else %}
+<p>No holdings to chart yet.</p>
+{% endif %}
+<p><a href="{{ url_for('portfolio_information', portfolio_id=portfolio['id']) }}">View numerical information instead</a> |
+<a href="{{ url_for('manage_holdings', portfolio_id=portfolio['id']) }}">Back to Holdings</a></p>
+</section>
+{% endblock %}

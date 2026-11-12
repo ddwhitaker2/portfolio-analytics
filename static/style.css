@@ -1,0 +1,106 @@
+/* Shared colors keep both themes consistent. */
+:root {
+    --background: #f2f2f2;
+    --surface: #fff;
+    --text: #222;
+    --border: #aaa;
+    --heading: #e8e8e8;
+    --link: #1559a0;
+}
+body.dark {
+    --background: #242424;
+    --surface: #333;
+    --text: #eee;
+    --border: #777;
+    --heading: #414141;
+    --link: #a8ceff;
+    color-scheme: dark;
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    background: var(--background);
+    color: var(--text);
+}
+header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px; }
+.site-title { margin: 0 0 12px; font-size: 22px; font-weight: bold; }
+nav, .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+a { color: var(--link); }
+main { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+section { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; }
+h1, h2 { margin-top: 0; line-height: 1.3; }
+h1 { font-size: 26px; }
+h2 { font-size: 21px; }
+button, .button {
+    display: inline-block;
+    background: #175da8;
+    color: white;
+    border: 1px solid #175da8;
+    border-radius: 0;
+    padding: 8px 12px;
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+button:hover, .button:hover { background: #10477f; border-color: #10477f; }
+:focus-visible { outline: 3px solid var(--link); outline-offset: 3px; }
+/* Tables can scroll on small screens without shrinking the text. */
+.table-scroll { overflow-x: auto; margin: 16px 0; }
+table { width: 100%; border-collapse: collapse; }
+caption { text-align: left; margin-bottom: 8px; }
+th, td { border: 1px solid var(--border); padding: 10px; text-align: left; }
+th { background: var(--heading); }
+input, select {
+    box-sizing: border-box;
+    max-width: 100%;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    padding: 8px;
+    font: inherit;
+}
+form p label { display: block; margin-bottom: 4px; }
+form p input { width: 320px; }
+.inline-form { display: inline; }
+.portfolio-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.dashboard-totals { display: flex; flex-wrap: wrap; gap: 12px 40px; margin: 12px 0; }
+li { margin: 10px 0; }
+progress { width: 100%; max-width: 600px; height: 24px; accent-color: #175da8; }
+.skip-link { position: absolute; left: -10000px; }
+.skip-link:focus { position: static; display: block; background: var(--surface); padding: 10px; }
+@media (max-width: 600px) {
+    section { padding: 14px; }
+    main { padding: 0 10px; }
+    .dashboard-totals { display: block; }
+}
+/* Native dialogs provide the dimmed background and keyboard focus handling. */
+dialog {
+    box-sizing: border-box;
+    width: 660px;
+    max-width: calc(100% - 32px);
+    max-height: calc(100% - 40px);
+    overflow-y: auto;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    padding: 24px;
+}
+dialog::backdrop { background: rgb(0 0 0 / 50%); }
+dialog section { border: 0; padding: 0; margin: 0; }
+dialog h1, dialog h2 { font-size: 24px; }
+dialog input { width: 100%; }
+.secondary { background: var(--surface); color: var(--text); border-color: var(--border); }
+.secondary:hover { background: var(--heading); border-color: var(--border); }
+.cost-preview { padding: 12px 0; border-top: 1px solid var(--border); }
+.welcome-features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+.welcome-features h3 { margin-bottom: 4px; }
+.guide-steps { display: flex; gap: 16px; list-style: none; padding-left: 0; }
+.guide-steps li { flex: 1; border: 1px solid var(--border); padding: 12px; }
+.guide-steps h3 { margin-top: 0; }
+@media (max-width: 700px) {
+    .guide-steps { display: block; }
+    .welcome-features { grid-template-columns: 1fr; }
+}

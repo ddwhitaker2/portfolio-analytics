@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+<h1>Edit Holding</h1>
+<p>Update the information and save it, or cancel to keep the old values.</p>
+<form method="post" action="{{ url_for('edit_holding', holding_id=holding['id']) }}">
+    <!-- Fill the fields with the saved values so the user doesn't start over. -->
+    <p><label for="ticker">Ticker:</label>
+       <input id="ticker" name="ticker" value="{{ holding['ticker'] }}" maxlength="12" required></p>
+    <p><label for="shares">Number of shares:</label>
+       <input id="shares" name="shares" type="number" min="0.0001" step="any" value="{{ holding['shares'] }}" required></p>
+    <p><label for="purchase_price">Purchase price per share ($):</label>
+       <input id="purchase_price" name="purchase_price" type="number" min="0" step="any" value="{{ holding['purchase_price'] }}" required></p>
+    <p><label for="current_price">Current price per share ($):</label>
+       <input id="current_price" name="current_price" type="number" min="0" step="any" value="{{ holding['current_price'] }}" required></p>
+    <button type="submit">Save Changes</button>
+    <a href="{{ url_for('manage_holdings', portfolio_id=holding['portfolio_id']) }}">Cancel</a>
+</form>
+</section>
+{% endblock %}

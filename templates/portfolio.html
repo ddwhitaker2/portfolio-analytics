@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+<h1>Manage Portfolios</h1>
+<p>Keep separate groups of investments, such as retirement and brokerage accounts.</p>
+<button type="button" id="portfolio-open" hidden>New Portfolio</button>
+<div id="portfolio-create">
+<h2>Create Portfolio</h2>
+<!-- The POST request is handled by portfolio() in app.py. -->
+<form method="post" action="{{ url_for('portfolio') }}">
+    <label for="name">Portfolio name:</label>
+    <input id="name" name="name" type="text" maxlength="100" required>
+    <button type="submit">Create Portfolio</button>
+</form>
+</div>
+<h2>Portfolios</h2>
+{% if portfolios %}
+<div class="table-scroll">
+<table>
+    <tr><th>Portfolio name</th><th>Actions</th></tr>
+    {% for p in portfolios %}
+    <tr>
+        <td>{{ p['name'] }}</td>
+        <td>
+            <a href="{{ url_for('manage_holdings', portfolio_id=p['id']) }}">Manage holdings</a> |
+            <a href="{{ url_for('charts', portfolio_id=p['id']) }}">Charts</a> |
+            <a href="{{ url_for('portfolio_information', portfolio_id=p['id']) }}">Info</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+{% else %}
+<p>No portfolios yet. Select New Portfolio to make one.</p>
+{% endif %}
+</section>
+{% endblock %}

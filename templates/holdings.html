@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+<h1>Manage Holdings</h1>
+<h2>{{ portfolio['name'] }}</h2>
+<p><a data-popup href="{{ url_for('create_holding', portfolio_id=portfolio['id']) }}" class="button">Add Holding</a></p>
+<p><a href="{{ url_for('portfolio_information', portfolio_id=portfolio['id']) }}">Portfolio Information</a> |
+<a href="{{ url_for('charts', portfolio_id=portfolio['id']) }}">Charts</a></p>
+<p>Removing a holding permanently deletes its saved information. You would need to enter it again.</p>
+{% set totals = namespace(cost=0) %}
+{% for item in holdings %}{% set totals.cost = totals.cost + item['shares'] * item['purchase_price'] %}{% endfor %}
+{% if holdings %}
+<div class="table-scroll">
+<table>
+<tr><th>Ticker</th><th>Shares</th><th>Purchase price</th><th>Recorded cost</th><th>Current price</th><th>Actions</th></tr>
+{% for h in holdings %}
+<tr>
+    <td>{{ h['ticker'] }}</td>
+    <td>{{ h['shares'] }}</td>
+    <td>${{ '%.2f'|format(h['purchase_price']) }}</td>
+    <td>${{ '%.2f'|format(h['shares'] * h['purchase_price']) }}</td>
+    <td>${{ '%.2f'|format(h['current_price']) }}</td>
+    <td>
+        <a data-popup href="{{ url_for('edit_holding', holding_id=h['id']) }}" class="button">Edit</a>
+        <!-- Explain what is lost before removing a holding. -->
+        <form data-delete data-ticker="{{ h['ticker'] }}" data-shares="{{ h['shares'] }}" data-price="{{ h['purchase_price'] }}" data-portfolio="{{ portfolio['name'] }}" data-total="{{ totals.cost }}" method="post" action="{{ url_for('remove_holding', holding_id=h['id']) }}" class="inline-form"
+              onsubmit="return confirm('Remove this holding? This permanently deletes its recorded purchase information. You would have to enter it again.');">
+            <button type="submit">Remove</button>
+        </form>
+    </td>
+</tr>
+{% endfor %}
+</table>
+</div>
+{% else %}
+<p>This portfolio has no holdings yet. Select Add Holding to get started.</p>
+{% endif %}
+<p><a href="{{ url_for('portfolio') }}">Back to Portfolios</a></p>
+</section>
+{% endblock %}

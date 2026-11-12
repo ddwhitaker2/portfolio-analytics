@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+<h1>Add Holding</h1>
+<h2>{{ portfolio['name'] }}</h2>
+<p>Enter the stock information below. You can edit it later if you make a mistake.</p>
+<form method="post" action="{{ url_for('create_holding', portfolio_id=portfolio['id']) }}">
+    <!-- These names match the fields app.py reads from request.form. -->
+    <p><label for="ticker">Stock ticker:</label>
+       <input id="ticker" name="ticker" type="text" placeholder="AAPL" maxlength="12" required></p>
+    <p><label for="shares">Number of shares:</label>
+       <input id="shares" name="shares" type="number" min="0.0001" step="any" required></p>
+    <p><label for="purchase_price">Purchase price per share ($):</label>
+       <input id="purchase_price" name="purchase_price" type="number" min="0" step="any" required></p>
+    <p><label for="current_price">Current price per share ($):</label>
+       <input id="current_price" name="current_price" type="number" min="0" step="any" required></p>
+    <p><small>Prices are entered manually and can become outdated. This is not a live market feed.</small></p>
+    <button type="submit">Add Holding</button>
+    <a href="{{ url_for('manage_holdings', portfolio_id=portfolio['id']) }}">Cancel</a>
+</form>
+</section>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+    <h1>Welcome to the Financial Portfolio Tracker</h1>
+    <button type="button" id="welcome-open">About This Tracker</button>
+    <p>Organize investments into portfolios, track purchase costs, and view investment performance using statistics and allocation charts.</p>
+    <p>Prices are recorded manually, not updated from live markets. Gains and losses are measured since purchase.</p>
+</section>
+<section id="dashboard">
+    <h2>Portfolio Dashboard</h2>
+    {% if portfolios %}
+    <form method="GET" action="{{ url_for('home') }}" class="portfolio-picker">
+        <label for="portfolio-select">Selected portfolio</label>
+        <select name="portfolio_id" id="portfolio-select">
+            {% for p in portfolios %}
+            <option value="{{ p['id'] }}" {% if selected_portfolio['id'] == p['id'] %}selected{% endif %}>{{ p['name'] }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">View Portfolio</button>
+    </form>
+    {% else %}
+    <p>Create a portfolio to start tracking your holdings.</p>
+    {% endif %}
+    <div class="dashboard-totals">
+        <p><strong>Recorded cost:</strong> ${{ '%.2f'|format(summary['total_invested']) }}</p>
+        <p><strong>Number of holdings:</strong> {{ holdings|length }}</p>
+    </div>
+    <div class="actions">
+        <a class="button" href="{{ url_for('manage_holdings', portfolio_id=selected_portfolio['id']) if selected_portfolio else url_for('portfolio') }}">Manage Holdings</a>
+        <a class="button" data-popup href="{{ url_for('portfolio') }}">Create Portfolio</a>
+        <a class="button" href="{{ url_for('charts', portfolio_id=selected_portfolio['id']) if selected_portfolio else url_for('portfolio') }}">View Charts</a>
+        <a class="button" href="{{ url_for('portfolio_information', portfolio_id=selected_portfolio['id']) if selected_portfolio else url_for('portfolio') }}">Portfolio Information</a>
+    </div>
+</section>
+<section>
+    <h2>Holdings Overview</h2>
+    <p>Allocation is each holding's share of the portfolio's current recorded value.</p>
+    {% if holdings %}
+    <div class="table-scroll">
+    <table>
+        <caption>{{ selected_portfolio['name'] }} holdings</caption>
+        <thead><tr><th scope="col">Ticker</th><th scope="col">Shares</th><th scope="col">Purchase Price</th><th scope="col">Recorded Cost</th><th scope="col">Allocation</th></tr></thead>
+        <tbody>
+        {% for h in holdings %}
+        <tr><td>{{ h['ticker'] }}</td><td>{{ h['shares'] }}</td><td>${{ '%.2f'|format(h['purchase_price']) }}</td><td>${{ '%.2f'|format(h['shares'] * h['purchase_price']) }}</td><td>{{ '%.2f'|format(summary['holdings'][loop.index0]['allocation_percent']) }}%</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}<p>No holdings to display yet. Use Manage Holdings to add an investment.</p>{% endif %}
+</section>
+<section>
+    <h2>Getting Started</h2>
+    <button id="guide-toggle" type="button" aria-expanded="true" aria-controls="getting-started">Hide Getting Started</button>
+    <div id="getting-started">
+        <ol class="guide-steps">
+            <li><h3>Create Your Portfolio</h3><p>Open Portfolios and select New Portfolio. Enter a name, then select Create Portfolio.</p><a class="button" data-popup href="{{ url_for('portfolio') }}">Create Portfolio</a></li>
+            <li><h3>Add Your Holdings</h3><p>Open Holdings and select Add Holding. Enter a ticker, number of shares, purchase price, and manually recorded current price. Save to add it.</p><a class="button" {% if selected_portfolio %}data-popup{% endif %} href="{{ url_for('create_holding', portfolio_id=selected_portfolio['id']) if selected_portfolio else url_for('portfolio') }}">{{ 'Add Holding' if selected_portfolio else 'Create a Portfolio First' }}</a></li>
+            <li><h3>Review Your Investments</h3><p>Use the dashboard for an overview, Charts for visual allocations, and Info for detailed statistics.</p><a class="button" href="#dashboard">View Dashboard</a></li>
+        </ol>
+        <p>Hiding this guide does not change your investments. Use Show Getting Started to reopen it.</p>
+    </div>
+</section>
+<dialog id="welcome-dialog" aria-labelledby="welcome-title">
+    <h2 id="welcome-title">Welcome to Portfolio Tracker</h2>
+    <p>Organize your investments and understand what you paid and how their recorded value has changed.</p>
+    <div class="welcome-features">
+        <div><h3>Multiple portfolios</h3><p>Keep retirement and brokerage investments in separate groups.</p></div>
+        <div><h3>Purchase costs</h3><p>Enter shares and purchase prices to calculate what you invested.</p></div>
+        <div><h3>Gains and losses</h3><p>Compare purchase costs with manually entered current prices. Prices are not live, and returns are since purchase.</p></div>
+        <div><h3>Allocation</h3><p>Choose visual charts or detailed numbers to understand each holding's share of your portfolio.</p></div>
+    </div>
+    <button type="button" id="welcome-close" autofocus>Explore Your Portfolio</button>
+</dialog>
+{% endblock %}

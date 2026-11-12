@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+<h1>Portfolio Information</h1>
+<h2>{{ portfolio['name'] }}</h2>
+<!-- A separate info page keeps the dashboard from being too crowded. -->
+<p>Number of holdings: {{ holdings|length }}</p>
+<p>Total invested: ${{ '%.2f'|format(summary['total_invested']) }}</p>
+<p>Current portfolio value: ${{ '%.2f'|format(summary['total_value']) }}</p>
+<p>Profit / loss: ${{ '%.2f'|format(summary['total_gain_loss']) }}
+   ({{ '%.2f'|format(summary['total_gain_loss_percent']) }}%)</p>
+<h3>Holding Stats</h3>
+{% if summary['holdings'] %}
+<div class="table-scroll">
+<table>
+<tr><th>Ticker</th><th>Shares</th><th>Recorded cost</th><th>Market value</th><th>Gain / loss</th><th>P/L %</th><th>Allocation</th></tr>
+{% for h in summary['holdings'] %}
+<tr>
+    <td>{{ h['ticker'] }}</td>
+    <td>{{ h['shares'] }}</td>
+    <td>${{ '%.2f'|format(h['cost_basis']) }}</td>
+    <td>${{ '%.2f'|format(h['market_value']) }}</td>
+    <td>${{ '%.2f'|format(h['gain_loss']) }}</td>
+    <td>{{ '%.2f'|format(h['gain_loss_percent']) }}%</td>
+    <td>{{ '%.2f'|format(h['allocation_percent']) }}%</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+{% else %}<p>No holdings yet.</p>{% endif %}
+<p><small>Market values use the prices entered by the user, not live closing prices.</small></p>
+<p><a href="{{ url_for('charts', portfolio_id=portfolio['id']) }}">View Charts instead</a> |
+<a href="{{ url_for('manage_holdings', portfolio_id=portfolio['id']) }}">Back to Holdings</a></p>
+</section>
+{% endblock %}

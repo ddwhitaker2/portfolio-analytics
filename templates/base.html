@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Portfolio Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+{% set current = namespace(id=none) %}
+{% if selected_portfolio is defined and selected_portfolio %}
+    {% set current.id = selected_portfolio['id'] %}
+{% elif portfolio is defined and portfolio %}
+    {% set current.id = portfolio['id'] %}
+{% elif holding is defined %}
+    {% set current.id = holding['portfolio_id'] %}
+{% elif portfolios is defined and portfolios %}
+    {% set current.id = portfolios[0]['id'] %}
+{% endif %}
+<header>
+    <p class="site-title">Financial Portfolio Tracker</p>
+    <!-- Keep the same navigation on every page. -->
+    <nav aria-label="Main navigation">
+        <a href="{{ url_for('home', portfolio_id=current.id) }}">Home</a>
+        <a href="{{ url_for('portfolio') }}">Portfolios</a>
+        <a href="{{ url_for('manage_holdings', portfolio_id=current.id) if current.id else url_for('portfolio') }}">Holdings</a>
+        <a href="{{ url_for('charts', portfolio_id=current.id) if current.id else url_for('portfolio') }}">Charts</a>
+        <a href="{{ url_for('portfolio_information', portfolio_id=current.id) if current.id else url_for('portfolio') }}">Info</a>
+        <button id="theme-toggle" type="button" aria-pressed="false">Light/Dark Mode</button>
+    </nav>
+</header>
+<main id="main-content">
+    {% block content %}{% endblock %}
+</main>
+<!-- One native dialog is reused for forms and removal confirmation. -->
+<dialog id="action-dialog" aria-labelledby="popup-title">
+    <div id="popup-content"></div>
+</dialog>
+</body>
+</html>
